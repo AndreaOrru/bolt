@@ -1,0 +1,12 @@
+{
+  "name": "moonbot",
+  "version": "0.0.1",
+  "description": "To the Moon!",
+  "main": "index.js",
+  "repository": "https://github.com/AndreaOrru/moonbot",
+  "author": "Andrea Orru <andrea@orru.io>",
+  "private": true,
+  "scripts": {
+    "start": "node index.js"
+  }
+}
