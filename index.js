@@ -6,9 +6,9 @@ const web3 = new Web3(
 );
 
 const subscription = web3.eth
-  .subscribe("pendingTransactions", (error, result) => {
+  .subscribe("newBlockHeaders", (error, result) => {
     if (!error) console.log(result);
   })
-  .on("data", (transaction) => {
-    console.log(transaction);
+  .on("data", (blockHeader) => {
+    console.log(blockHeader);
   });

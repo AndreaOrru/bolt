@@ -1,9 +1,9 @@
 {
-  "name": "moonbot",
+  "name": "bolt",
   "version": "0.0.1",
   "description": "To the Moon!",
   "main": "index.js",
-  "repository": "https://github.com/AndreaOrru/moonbot",
+  "repository": "https://github.com/AndreaOrru/bolt",
   "author": "Andrea Orru <andrea@orru.io>",
   "private": true,
   "scripts": {
@@ -14,6 +14,7 @@
     "web3": "^1.3.2"
   },
   "devDependencies": {
-    "prettier": "2.2.1"
+    "prettier": "2.2.1",
+    "wscat": "^4.0.1"
   }
 }
