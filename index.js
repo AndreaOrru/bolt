@@ -27,7 +27,7 @@ ws.on("message", (data) => {
 
   const transactions = json["params"]["result"];
   transactions.forEach((transaction) => {
-    if (transaction["to"] == process.env.TARGET_ADDRESS) {
+    if (transaction["to"] === process.env.TARGET_ADDRESS) {
       if (!(transaction["hash"] in currentTransactions)) {
         currentTransactions[transaction["hash"]] = transaction;
         console.log(transaction);
@@ -36,10 +36,10 @@ ws.on("message", (data) => {
     }
   });
 
-  currentTransactions = _.omit(currentTransactions, (transaction) => {
-    const resolved = !(transaction["hash"] in seenTransactions);
+  currentTransactions = _.omit(currentTransactions, (value, key, object) => {
+    const resolved = !(key in seenTransactions);
     if (resolved) {
-      console.log(`${transaction["hash"]} RESOLVED`);
+      console.log(`${key} RESOLVED`);
     }
     return resolved;
   });
