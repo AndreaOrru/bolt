@@ -6,7 +6,7 @@ const ws = new WebSocket(process.env.WS_SERVER);
 const simdjson = require("simdjson");
 const _ = require("underscore");
 
-let currentTransactions = {};
+let pendingTransactions = {};
 
 ws.on("open", () => {
   ws.send(
@@ -17,30 +17,31 @@ ws.on("open", () => {
       jsonrpc: "2.0",
     })
   );
+
+  ws.send(
+    JSON.stringify({
+      method: "eth_subscribe",
+      params: ["newHeads"],
+      id: 2,
+      jsonrpc: "2.0",
+    })
+  );
 });
 
 ws.on("message", (data) => {
-  let seenTransactions = new Set();
-
   const json = simdjson.parse(data);
-  if (json["method"] != "parity_subscription") return;
 
-  const transactions = json["params"]["result"];
-  transactions.forEach((transaction) => {
-    if (transaction["to"] === process.env.TARGET_ADDRESS) {
-      if (!(transaction["hash"] in currentTransactions)) {
-        currentTransactions[transaction["hash"]] = transaction;
-        console.log(transaction);
+  if (json["method"] == "parity_subscription") {
+    const transactions = json["params"]["result"];
+    transactions.forEach((transaction) => {
+      if (transaction["to"] === process.env.TARGET_ADDRESS) {
+        if (!(transaction["hash"] in pendingTransactions)) {
+          pendingTransactions[transaction["hash"]] = transaction;
+          console.log(transaction);
+        }
       }
-      seenTransactions.add(transaction["hash"]);
-    }
-  });
-
-  currentTransactions = _.omit(currentTransactions, (value, key, object) => {
-    const resolved = !(key in seenTransactions);
-    if (resolved) {
-      console.log(`${key} RESOLVED`);
-    }
-    return resolved;
-  });
+    });
+  } else if (json["method"] == "eth_subscription") {
+    pendingTransactions = {};
+  }
 });
